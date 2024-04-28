@@ -1,10 +1,11 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormFlied from "../../components/formflied";
 import { useState } from "react";
 import PrimaryButton from "../../components/button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { signIn } from "../../lib/appwrite";
 const Login = () => {
   const [formFlied, setFormFlied] = useState({
     email: "",
@@ -13,7 +14,22 @@ const Login = () => {
 
   const [isSubmiting, setIsSubmiting] = useState(false);
 
-  const submit = () => {};
+  const submit = async () => {
+    if (!formFlied.password || !formFlied.email) {
+      Alert.alert("Eror", "Fill all form");
+    }
+
+    setIsSubmiting(true);
+    try {
+      await signIn(formFlied.email, formFlied.password);
+
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Eror", error.message);
+    } finally {
+      setIsSubmiting(false);
+    }
+  };
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
