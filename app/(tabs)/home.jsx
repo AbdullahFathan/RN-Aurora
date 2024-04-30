@@ -12,7 +12,7 @@ import SearchInput from "../../components/searchinput";
 import Treding from "../../components/treding";
 import EmptyState from "../../components/emptystate";
 import { useEffect, useState } from "react";
-import { getAllPost } from "../../lib/appwrite";
+import { getAllPost, getLatestPost } from "../../lib/appwrite";
 import { useAppWrite } from "../../lib/useAppWrite";
 import VideoCard from "../../components/videocard";
 
@@ -20,6 +20,7 @@ const Home = () => {
   const [refershing, setRefershing] = useState(false);
 
   const { data: posts, fetchData } = useAppWrite(getAllPost);
+  const { data: latestPost } = useAppWrite(getLatestPost);
 
   const onRefershing = async () => {
     setRefershing(true);
@@ -58,7 +59,7 @@ const Home = () => {
               <Text className="text-gray-100 text-lg font-pregular mb-3">
                 Latest Video
               </Text>
-              <Treding posts={[{ id: 1 }, { id: 2 }, { id: 3 }]} />
+              <Treding posts={latestPost ?? []} />
             </View>
           </View>
         )}
