@@ -5,7 +5,8 @@ import FormFlied from "../../components/formflied";
 import { useState } from "react";
 import PrimaryButton from "../../components/button";
 import { Link, router } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 const Login = () => {
   const [formFlied, setFormFlied] = useState({
     email: "",
@@ -13,6 +14,7 @@ const Login = () => {
   });
 
   const [isSubmiting, setIsSubmiting] = useState(false);
+  const { setUser, setIsHasLogin } = useGlobalContext();
 
   const submit = async () => {
     if (!formFlied.password || !formFlied.email) {
@@ -22,6 +24,13 @@ const Login = () => {
     setIsSubmiting(true);
     try {
       await signIn(formFlied.email, formFlied.password);
+
+      const result = await getCurrentUser();
+
+      console.log(`user login = ${result}`);
+
+      setUser(result);
+      setIsHasLogin(true);
 
       router.replace("/home");
     } catch (error) {

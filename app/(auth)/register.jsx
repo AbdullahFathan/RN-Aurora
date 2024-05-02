@@ -6,6 +6,7 @@ import { useState } from "react";
 import PrimaryButton from "../../components/button";
 import { Link, router } from "expo-router";
 import { createUser } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Register = () => {
   const [formFlied, setFormFlied] = useState({
@@ -15,6 +16,7 @@ const Register = () => {
   });
 
   const [isSubmiting, setIsSubmiting] = useState(false);
+  const { setUser, setIsHasLogin } = useGlobalContext();
 
   const submit = async () => {
     if (!formFlied.email || !formFlied.password || !formFlied.username) {
@@ -28,6 +30,9 @@ const Register = () => {
         formFlied.password,
         formFlied.username
       );
+
+      setUser(res);
+      setIsHasLogin(true);
 
       router.replace("/home");
     } catch (error) {
